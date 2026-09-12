@@ -1,53 +1,52 @@
-import layoutTemplate from './layoutView.js';
-import Header from './header.js';
-import Sidebar from './sidebarView.js';
+import Header from './Header.js';
+import Sidebar from './Sidebar.js';
 
 export default {
     name: 'MasterLayout',
-    template: layoutTemplate, // Langsung pasang string template di sini
     components: {
         'header-component': Header,
         'sidebar-component': Sidebar
     },
     setup() {
-        const { ref, nextTick } = Vue;
+        const { ref } = Vue;
         const isSidebarOpen = ref(false);
-
-        const refreshIcons = () => {
-            nextTick(() => {
-                if (window.lucide && typeof window.lucide.createIcons === 'function') {
-                    window.lucide.createIcons();
-                }
-            });
-        };
 
         const toggleSidebar = () => {
             isSidebarOpen.value = !isSidebarOpen.value;
-            if (isSidebarOpen.value) {
-                document.body.classList.add('sidebar-open');
-                document.body.style.overflow = 'hidden';
-            } else {
-                document.body.classList.remove('sidebar-open');
-                document.body.style.overflow = '';
-            }
+            document.body.style.overflow = isSidebarOpen.value ? 'hidden' : '';
         };
 
         return {
             isSidebarOpen,
-            toggleSidebar,
-            refreshIcons
+            toggleSidebar
         };
     },
     watch: {
         '$route'() {
             this.isSidebarOpen = false;
-            document.body.classList.remove('sidebar-open');
             document.body.style.overflow = '';
-            this.refreshIcons();
         }
     },
-    mounted() {
-        this.refreshIcons();
-    }
-    
+    template: `
+        <div class="app-layout" :class="{ 'sidebar-open': isSidebarOpen }">
+            <div 
+                v-if="isSidebarOpen" 
+                class="sidebar-overlay"
+                @click="toggleSidebar"
+            ></div>
+
+            <sidebar-component :is-open="isSidebarOpen"></sidebar-component>
+
+            <div class="app-viewport">
+                <header-component @toggle-sidebar="toggleSidebar"></header-component>
+                
+                <main class="app-content">
+                    <div class="view-container">
+                        <router-view></router-view>
+                    </div>
+                </main>
+            </div>
+        </div>
+   
+    `
 };
