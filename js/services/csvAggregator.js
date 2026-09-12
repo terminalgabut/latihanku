@@ -3,17 +3,17 @@
 import { Logger } from './debug.js';
 
 /**
- * Helper untuk konversi angka string (mendukung format desimal koma '2426,10' & titik)
+ * Helper konversi angka string (mendukung format desimal koma '2426,10' & titik)
  */
 function safeFloat(val, fallback = 0) {
-    if (!val || val === '') return fallback;
+    if (val === null || val === undefined || val === '') return fallback;
     const normalized = String(val).trim().replace(',', '.');
     const parsed = parseFloat(normalized);
     return isNaN(parsed) ? fallback : parsed;
 }
 
 function safeInt(val, fallback = 0) {
-    if (!val || val === '') return fallback;
+    if (val === null || val === undefined || val === '') return fallback;
     const parsed = parseInt(val, 10);
     return isNaN(parsed) ? fallback : parsed;
 }
@@ -23,30 +23,52 @@ function safeInt(val, fallback = 0) {
  */
 function parseGarminDate(dateStr) {
     if (!dateStr) return new Date().toISOString();
-    // Ubah format DD/MM/YYYY, HH.MM.SS menjadi format yang dibaca Date JS
-    const parts = dateStr.split(',');
-    if (parts.length < 2) return new Date().toISOString();
     
-    const [datePart, timePart] = parts;
-    const [day, month, year] = datePart.trim().split('/');
-    const timeClean = timePart.trim().replace(/\./g, ':');
+    // Jika formatnya "DD/MM/YYYY, HH.MM.SS"
+    if (dateStr.includes(',')) {
+        const parts = dateStr.split(',');
+        const [datePart, timePart] = parts;
+        const [day, month, year] = datePart.trim().split('/');
+        const timeClean = timePart.trim().replace(/\./g, ':');
+        
+        const isoLike = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${timeClean}`;
+        const parsed = new Date(isoLike);
+        if (!isNaN(parsed.getTime())) return parsed.toISOString();
+    }
     
-    const isoLike = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${timeClean}`;
-    const parsed = new Date(isoLike);
-    return isNaN(parsed.getTime()) ? new Date().toISOString() : parsed.toISOString();
+    const directParse = new Date(dateStr);
+    return isNaN(directParse.getTime()) ? new Date().toISOString() : directParse.toISOString();
 }
 
 /**
- * Parser CSV ringan tanpa eksternal library
+ * Parser CSV pintar: Menangani quote "..." dan koma desimal tanpa merusak struktur kolom
  */
 function parseCSV(text) {
-    const lines = text.trim().split('\n');
+    const lines = text.trim().split(/\r?\n/);
     if (lines.length < 2) return [];
-    
-    const headers = lines[0].split(',').map(h => h.trim().replace(/^"|"$/g, ''));
-    
-    return lines.slice(1).map(line => {
-        const values = line.split(',').map(v => v.trim().replace(/^"|"$/g, ''));
+
+    // Regex untuk memisahkan baris CSV secara presisi berdasarkan koma luar (bukan di dalam kutipan)
+    const splitCSVLine = (line) => {
+        const result = [];
+        let start = 0;
+        let inQuotes = false;
+        
+        for (let i = 0; i < line.length; i++) {
+            if (line[i] === '"') {
+                inQuotes = !inQuotes;
+            } else if (line[i] === ',' && !inQuotes) {
+                result.push(line.substring(start, i).trim().replace(/^"|"$/g, ''));
+                start = i + 1;
+            }
+        }
+        result.push(line.substring(start).trim().replace(/^"|"$/g, ''));
+        return result;
+    };
+
+    const headers = splitCSVLine(lines[0]);
+
+    return lines.slice(1).filter(line => line.trim() !== '').map(line => {
+        const values = splitCSVLine(line);
         const row = {};
         headers.forEach((h, idx) => {
             row[h] = values[idx] !== undefined ? values[idx] : null;
@@ -95,7 +117,7 @@ export async function processGarminCSVs(files) {
         // 1. Ekstraksi Data Utama dari session.csv
         const session = sessionRows[0];
 
-        const totalDistMeters = safeFloat(session.total_distance || session.distance);
+        const totalDistMeters = safeFloat(session.total_distance);
         const totalDistanceKm = Number((totalDistMeters / 1000).toFixed(2));
         const totalDurationS = safeFloat(session.total_elapsed_time || session.total_timer_time);
         
