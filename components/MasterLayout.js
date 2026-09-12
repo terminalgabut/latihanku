@@ -1,19 +1,18 @@
-// components/MasterLayout.js
-import layoutView from './layoutView.js';
+import layoutTemplate from './layoutView.js';
 import Header from './header.js';
 import Sidebar from './sidebarView.js';
 
 export default {
-    ...layoutView, // Menggabungkan template dari layoutView.js
+    name: 'MasterLayout',
+    template: layoutTemplate, // Langsung pasang string template di sini
     components: {
         'header-component': Header,
         'sidebar-component': Sidebar
     },
     setup() {
-        const { ref, watch, nextTick, onMounted } = Vue;
+        const { ref, nextTick } = Vue;
         const isSidebarOpen = ref(false);
 
-        // Helper untuk render ikon Lucide jika tersedia
         const refreshIcons = () => {
             nextTick(() => {
                 if (window.lucide && typeof window.lucide.createIcons === 'function') {
@@ -24,8 +23,13 @@ export default {
 
         const toggleSidebar = () => {
             isSidebarOpen.value = !isSidebarOpen.value;
-            // Kunci scroll pada body HP Android jika sidebar terbuka
-            document.body.style.overflow = isSidebarOpen.value ? 'hidden' : '';
+            if (isSidebarOpen.value) {
+                document.body.classList.add('sidebar-open');
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.classList.remove('sidebar-open');
+                document.body.style.overflow = '';
+            }
         };
 
         return {
@@ -35,18 +39,15 @@ export default {
         };
     },
     watch: {
-        // Tutup sidebar mobile otomatis & re-initialize ikon Lucide saat pindah halaman
         '$route'() {
             this.isSidebarOpen = false;
+            document.body.classList.remove('sidebar-open');
             document.body.style.overflow = '';
-            
-            if (this.$log) this.$log.info('Route changed, refreshing Lucide icons...');
             this.refreshIcons();
         }
     },
     mounted() {
-        if (this.$log) this.$log.info('Master Layout Mounted');
         this.refreshIcons();
     }
-
+    
 };
