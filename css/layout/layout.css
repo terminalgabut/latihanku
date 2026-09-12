@@ -1,108 +1,76 @@
 /* css/layout/layout.css */
 
-/* App Wrapper Utama */
-#app {
+/* Container Utama App Layout */
+.app-layout {
     display: flex;
-    flex-direction: column;
     min-height: 100vh;
     background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-family: var(--font-family-sans);
     position: relative;
 }
 
-/* Header Container Sticky/Fixed */
-.app-header {
-    position: sticky;
-    top: 0;
-    z-index: 40;
-    width: 100%;
-    height: 60px;
-    background-color: var(--bg-card);
-    border-bottom: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 1rem;
-}
-
-/* Layout Container (Sidebar + Main Content) */
-.app-container {
-    display: flex;
+/* Sisi Kanan: Area Viewport (Memperhitungkan Sidebar Fixed 280px) */
+.app-viewport {
     flex: 1;
-    position: relative;
-    overflow: hidden;
-}
-
-/* Sidebar Drawer Style & Overlay Fix */
-.sidebar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    width: 260px;
-    background-color: var(--bg-card);
-    border-right: 1px solid var(--border-color);
-    z-index: 50;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease-in-out;
     display: flex;
     flex-direction: column;
+    min-width: 0;
+    /* Memberi ruang di sebelah kiri untuk Sidebar Desktop (280px) */
+    margin-left: 280px; 
+    transition: margin-left var(--transition-fast);
 }
 
-.sidebar.is-open {
-    transform: translateX(0);
-}
-
-/* Backdrop Overlay untuk Mobile */
-.sidebar-overlay {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(11, 15, 23, 0.8);
-    backdrop-filter: blur(4px);
-    z-index: 45;
-}
-
-/* Area Main Content */
-.main-content {
+/* Area Konten Utama */
+.app-content {
     flex: 1;
+    /* Offset Atas = Tinggi Header Fixed (64px) + Spacing (1.5rem) */
+    padding: calc(64px + 1.5rem) 1.5rem 2.5rem; 
+    max-width: 1600px; /* Lebar maksimal ideal untuk Bento Dashboard & Metrics Grid */
     width: 100%;
-    padding: 1rem;
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-/* Container Terisolasi untuk Views */
-.view-container {
-    max-width: 1200px;
     margin: 0 auto;
-    width: 100%;
 }
 
-/* Grid System Sederhana untuk Cards/Metrics */
+/* Container Terisolasi untuk Halaman/Views */
+.view-container {
+    width: 100%;
+    animation: fadeIn 0.25s ease-out;
+}
+
+/* Grid System Sederhana untuk Metrics Cards */
 .grid-metrics {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 0.75rem;
 }
 
-/* Desktop Viewport Adaptation */
-@media (min-width: 768px) {
-    .sidebar {
-        position: static;
-        transform: none;
-        z-index: 10;
-    }
-
-    .sidebar-overlay {
-        display: none !important;
-    }
-
-    .main-content {
-        padding: 1.5rem 2rem;
+/* RESPONSIVE LOGIC: Mobile & Tablet (<= 1024px) */
+@media (max-width: 1024px) {
+    .app-viewport {
+        margin-left: 0; /* Reset margin karena sidebar menjadi mobile drawer */
     }
     
+    .app-content {
+        padding: calc(64px + 1rem) 1rem 2rem;
+    }
+}
+
+@media (min-width: 768px) {
     .grid-metrics {
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 1r
-            em;
+        gap: 1rem;
+    }
+}
+
+/* Smooth Fade-in Animation untuk View Transition */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+        
     }
 }
