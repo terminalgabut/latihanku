@@ -22,7 +22,7 @@ const Tobacco = () => import('./views/TobaccoEngine.js');
 const routes = [
     { 
         path: '/', 
-        name: 'upload',
+        name: 'uploadview',
         component: UploadView,
         meta: { title: 'Import Activity CSV' }
     },
