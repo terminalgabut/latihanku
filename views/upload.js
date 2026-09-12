@@ -1,5 +1,5 @@
 // views/upload.js
-import uploadTemplate from './UploadView.js';
+import uploadTemplate from './uploadView.js';
 import { processGarminCSVs } from '../js/services/csvAggregator.js';
 import { supabase } from '../js/services/supabase.js';
 import { Logger } from '../js/services/debug.js';
