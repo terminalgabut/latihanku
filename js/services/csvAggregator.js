@@ -1,5 +1,40 @@
 // js/services/csvAggregator.js
+
 import { Logger } from './debug.js';
+
+/**
+ * Helper untuk konversi angka string (mendukung format desimal koma '2426,10' & titik)
+ */
+function safeFloat(val, fallback = 0) {
+    if (!val || val === '') return fallback;
+    const normalized = String(val).trim().replace(',', '.');
+    const parsed = parseFloat(normalized);
+    return isNaN(parsed) ? fallback : parsed;
+}
+
+function safeInt(val, fallback = 0) {
+    if (!val || val === '') return fallback;
+    const parsed = parseInt(val, 10);
+    return isNaN(parsed) ? fallback : parsed;
+}
+
+/**
+ * Parser string tanggal Garmin (contoh: "08/09/2026, 04.34.12") ke ISO String
+ */
+function parseGarminDate(dateStr) {
+    if (!dateStr) return new Date().toISOString();
+    // Ubah format DD/MM/YYYY, HH.MM.SS menjadi format yang dibaca Date JS
+    const parts = dateStr.split(',');
+    if (parts.length < 2) return new Date().toISOString();
+    
+    const [datePart, timePart] = parts;
+    const [day, month, year] = datePart.trim().split('/');
+    const timeClean = timePart.trim().replace(/\./g, ':');
+    
+    const isoLike = `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}T${timeClean}`;
+    const parsed = new Date(isoLike);
+    return isNaN(parsed.getTime()) ? new Date().toISOString() : parsed.toISOString();
+}
 
 /**
  * Parser CSV ringan tanpa eksternal library
@@ -21,7 +56,7 @@ function parseCSV(text) {
 }
 
 /**
- * Helper untuk konversi detik per KM ke format MM:SS
+ * Helper konversi detik/KM ke format MM:SS
  */
 function formatPace(paceSecondsPerKm) {
     if (!paceSecondsPerKm || isNaN(paceSecondsPerKm) || !isFinite(paceSecondsPerKm)) return '0:00';
@@ -41,7 +76,6 @@ export async function processGarminCSVs(files) {
     }
 
     try {
-        // 1. Baca isi ketiga file CSV secara paralel
         const [recordText, lapText, sessionText] = await Promise.all([
             files.record.text(),
             files.lap.text(),
@@ -58,35 +92,34 @@ export async function processGarminCSVs(files) {
             throw new Error('Data session.csv kosong atau format tidak valid.');
         }
 
-        // 2. Ekstraksi Data Utama dari session.csv (Baris Pertama)
+        // 1. Ekstraksi Data Utama dari session.csv
         const session = sessionRows[0];
 
-        const totalDistMeters = parseFloat(session.total_distance || session.distance || 0);
+        const totalDistMeters = safeFloat(session.total_distance || session.distance);
         const totalDistanceKm = Number((totalDistMeters / 1000).toFixed(2));
-        const totalDurationS = parseFloat(session.total_elapsed_time || session.total_timer_time || 0);
+        const totalDurationS = safeFloat(session.total_elapsed_time || session.total_timer_time);
         
-        // Kalkulasi Avg Pace (total_duration_s / total_distance_km)
         const avgPaceSecPerKm = totalDistanceKm > 0 ? (totalDurationS / totalDistanceKm) : 0;
         const avgPaceFormatted = formatPace(avgPaceSecPerKm);
 
-        // 3. Ekstraksi laps_data dari lap.csv (Sesuai Spesifikasi Poin 2)
+        // 2. Ekstraksi laps_data dari lap.csv
         const lapsData = lapRows.map((lap, index) => {
             return {
-                lap_index: parseInt(lap.lap_index || index, 10),
-                start_time: lap.start_time || null,
-                end_time: lap.end_time || null,
-                elapsed_time_s: parseFloat(lap.total_elapsed_time || lap.total_timer_time || 0),
-                distance_m: parseFloat(lap.total_distance || 0),
-                avg_speed_ms: parseFloat(lap.avg_speed || 0),
-                max_speed_ms: parseFloat(lap.max_speed || 0),
-                avg_heart_rate: parseInt(lap.avg_heart_rate || 0, 10),
-                max_heart_rate: parseInt(lap.max_heart_rate || 0, 10),
-                avg_cadence: parseInt(lap.avg_cadence || lap.avg_running_cadence || 0, 10),
+                lap_index: safeInt(lap.message_index, index),
+                start_time: parseGarminDate(lap.start_time),
+                end_time: parseGarminDate(lap.timestamp),
+                elapsed_time_s: safeFloat(lap.total_elapsed_time || lap.total_timer_time),
+                distance_m: safeFloat(lap.total_distance),
+                avg_speed_ms: safeFloat(lap.enhanced_avg_speed || lap.avg_speed),
+                max_speed_ms: safeFloat(lap.enhanced_max_speed || lap.max_speed),
+                avg_heart_rate: safeInt(lap.avg_heart_rate),
+                max_heart_rate: safeInt(lap.max_heart_rate),
+                avg_cadence: safeInt(lap.avg_cadence || lap.avg_running_cadence),
                 lap_trigger: lap.lap_trigger || 'manual'
             };
         });
 
-        // 4. Ekstraksi record_summary dari record.csv (Sesuai Spesifikasi Poin 3)
+        // 3. Ekstraksi record_summary dari record.csv
         const routeData = [];
         const kmSplits = [];
         let currentTargetKm = 1;
@@ -96,23 +129,21 @@ export async function processGarminCSVs(files) {
         let powerSampleCount = 0;
 
         recordRows.forEach((row, idx) => {
-            const timeSec = parseFloat(row.timestamp_seconds || idx);
-            const distMeters = parseFloat(row.distance || 0);
+            const timeSec = safeFloat(row.timestamp_seconds, idx);
+            const distMeters = safeFloat(row.distance);
             const distKm = distMeters / 1000;
-            const speedMs = parseFloat(row.enhanced_speed || row.speed || 0);
-            const hr = parseInt(row.heart_rate || 0, 10);
-            const lat = row.position_lat ? parseFloat(row.position_lat) : null;
-            const lng = row.position_long ? parseFloat(row.position_long) : null;
-            const power = parseInt(row.power || 0, 10);
+            const speedMs = safeFloat(row.enhanced_speed || row.speed);
+            const hr = safeInt(row.heart_rate);
+            const lat = row.position_lat ? safeFloat(row.position_lat) : null;
+            const lng = row.position_long ? safeFloat(row.position_long) : null;
+            const power = safeInt(row.power);
 
-            // Akumulasi Power
             if (power > 0) {
                 if (power > maxPower) maxPower = power;
                 totalPower += power;
                 powerSampleCount++;
             }
 
-            // Simpan Ringkasan Telemetri Rute (t, d, s, hr, lat, lng)
             routeData.push({
                 t: timeSec,
                 d: Number(distMeters.toFixed(2)),
@@ -122,17 +153,15 @@ export async function processGarminCSVs(files) {
                 lng: lng
             });
 
-            // Agregasi Split per 1 KM
             if (distKm >= currentTargetKm) {
                 const splitDurationSec = timeSec - kmStartTime;
-                const splitPaceSec = splitDurationSec; // Durasi untuk tepat 1 KM
                 
                 kmSplits.push({
                     km: currentTargetKm,
                     duration_seconds: Math.round(splitDurationSec),
-                    pace_formatted: formatPace(splitPaceSec),
-                    avg_hr: hr, // HR pada penanda KM
-                    elevation_gain_m: parseFloat(row.altitude || 0)
+                    pace_formatted: formatPace(splitDurationSec),
+                    avg_hr: hr,
+                    elevation_gain_m: safeFloat(row.enhanced_altitude || row.altitude)
                 });
 
                 kmStartTime = timeSec;
@@ -148,20 +177,20 @@ export async function processGarminCSVs(files) {
             route_data: routeData
         };
 
-        // 5. Susun Payload Baris Tunggal Tabel 'activities' (Sesuai Spesifikasi Poin 1)
+        // 4. Susun Payload Akhir
         const payload = {
-            activity_date: new Date(session.start_time || session.timestamp || new Date()).toISOString(),
+            activity_date: parseGarminDate(session.start_time || session.timestamp),
             sport: session.sport || 'running',
             sub_sport: session.sub_sport || 'generic',
             total_distance_km: totalDistanceKm,
             total_duration_s: Number(totalDurationS.toFixed(2)),
             avg_pace_min_km: avgPaceFormatted,
-            avg_heart_rate: parseInt(session.avg_heart_rate || 0, 10),
-            max_heart_rate: parseInt(session.max_heart_rate || 0, 10),
-            avg_cadence: parseInt(session.avg_cadence || session.avg_running_cadence || 0, 10),
-            total_calories: parseInt(session.total_calories || 0, 10),
-            total_ascent_m: Number(parseFloat(session.total_ascent || 0).toFixed(2)),
-            total_laps: parseInt(session.num_laps || lapsData.length || 1, 10),
+            avg_heart_rate: safeInt(session.avg_heart_rate),
+            max_heart_rate: safeInt(session.max_heart_rate),
+            avg_cadence: safeInt(session.avg_cadence || session.avg_running_cadence),
+            total_calories: safeInt(session.total_calories),
+            total_ascent_m: Number(safeFloat(session.total_ascent).toFixed(2)),
+            total_laps: safeInt(session.num_laps, lapsData.length),
             laps_data: lapsData,
             record_summary: recordSummary
         };
