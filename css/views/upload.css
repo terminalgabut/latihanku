@@ -1,0 +1,194 @@
+/* css/views/upload.css */
+
+/* Container Utama Upload */
+.upload-view {
+    max-width: 680px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+/* Header Section */
+.upload-header {
+    text-align: center;
+}
+
+.upload-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-primary);
+}
+
+.upload-header p {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+}
+
+/* 3 Zone Upload Grid */
+.upload-grid {
+    display: grid;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+@media (min-width: 640px) {
+    .upload-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+/* Base Card Zone */
+.upload-zone-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.25rem 0.75rem;
+    border: 2px dashed var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-card);
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    text-align: center;
+}
+
+.upload-zone-card:hover {
+    border-color: var(--border-focus);
+    background-color: var(--bg-card-hover);
+}
+
+.upload-zone-card i {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-muted);
+    transition: color 0.2s ease;
+}
+
+.upload-zone-card__title {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.upload-zone-card__filename {
+    font-size: 0.6875rem;
+    color: var(--text-muted);
+    margin-top: 0.25rem;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Active State per Tipe File */
+.upload-zone-card.is-active--record {
+    border-color: var(--accent-cyan);
+    background-color: rgba(6, 182, 212, 0.08);
+}
+.upload-zone-card.is-active--record i {
+    color: var(--accent-cyan);
+}
+
+.upload-zone-card.is-active--lap {
+    border-color: var(--accent-green);
+    background-color: rgba(16, 185, 129, 0.08);
+}
+.upload-zone-card.is-active--lap i {
+    color: var(--accent-green);
+}
+
+.upload-zone-card.is-active--session {
+    border-color: var(--accent-purple);
+    background-color: rgba(168, 85, 247, 0.08);
+}
+.upload-zone-card.is-active--session i {
+    color: var(--accent-purple);
+}
+
+/* Action Button */
+.btn-process {
+    width: 100%;
+    padding: 0.875rem 1rem;
+    border-radius: var(--radius-md);
+    font-weight: 700;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+}
+
+.btn-process:not(:disabled) {
+    background-color: var(--accent-cyan);
+    color: #000;
+    box-shadow: var(--shadow-glow);
+}
+
+.btn-process:not(:disabled):active {
+    opacity: 0.9;
+    transform: scale(0.99);
+}
+
+.btn-process:disabled {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    cursor: not-allowed;
+}
+
+/* Preview Card Section (1 Baris Ringkasan) */
+.preview-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    box-shadow: var(--shadow-card);
+}
+
+.preview-card__title {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.preview-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+.preview-metric-box {
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
+    padding: 0.75rem;
+    border-radius: var(--radius-md);
+    text-align: center;
+}
+
+.btn-submit-supabase {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background-color: var(--accent-green);
+    color: #000;
+    font-weight: 700;
+    font-size: 0.8125rem;
+    border-radius: var(--radius-md);
+    transition: opacity 0.2s ease;
+}
+
+.btn-submit-supabase:hover {
+    opacity: 0.9;
+}
