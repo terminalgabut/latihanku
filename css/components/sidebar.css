@@ -1,93 +1,119 @@
-/* css/components/sidebar.css */
+/* css/layout/sidebar.css */
 
-/* Overlay untuk Mobile Drawer */
-.sidebar-overlay {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(11, 15, 23, 0.8);
-    backdrop-filter: blur(4px);
-    z-index: 40;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.25s ease;
-}
-
-.sidebar-overlay.is-active {
-    opacity: 1;
-    pointer-events: auto;
-}
-
-/* Sidebar Drawer Base */
+/* --- 1. CORE LAYOUT --- */
 .app-sidebar {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    width: 240px;
+    width: 280px;
     background-color: var(--bg-card);
     border-right: 1px solid var(--border-color);
-    z-index: 50;
+    
+    height: calc(100vh - 64px); 
     display: flex;
     flex-direction: column;
-    transform: translateX(-100%);
-    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    position: fixed;
+    left: 0;
+    top: 64px; 
+    
+    z-index: 90; 
+    
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
 }
 
-.app-sidebar.is-open {
-    transform: translateX(0);
+/* --- 2. RESPONSIVE LOGIC (Mobile First) --- */
+@media (max-width: 1024px) {
+    .app-sidebar {
+        transform: translateX(-100%);
+        box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+    }
+
+    .sidebar-open .app-sidebar {
+        transform: translateX(0);
+    }
+
+    .sidebar-open::after {
+        content: "";
+        position: fixed;
+        inset: 64px 0 0 0;
+        background: rgba(11, 15, 23, 0.75);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 80;
+    }
 }
 
-/* Navigasi Menu */
+/* Desktop Fixity */
+@media (min-width: 1025px) {
+    .app-sidebar {
+        transform: translateX(0) !important;
+        position: fixed; 
+    }
+}
+
+/* --- 3. MENU ITEMS (Sport Dark Style) --- */
 .sidebar-nav {
+    padding: 1.25rem 0.75rem;
     display: flex;
     flex-direction: column;
-    padding: 1rem 0.75rem;
-    gap: 0.375rem;
+    gap: 0.35rem;
 }
 
-.nav-item {
+.sidebar-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.625rem 0.875rem;
+    gap: 0.875rem;
+    padding: 0.75rem 1rem;
     border-radius: var(--radius-md);
     color: var(--text-secondary);
     font-size: 0.875rem;
     font-weight: 600;
     text-decoration: none;
-    transition: all 0.15s ease;
+    transition: all var(--transition-fast);
+    position: relative;
 }
 
-.nav-item i {
-    font-size: 1.1rem;
-    width: 20px;
-    text-align: center;
-}
-
-.nav-item:hover {
-    color: var(--text-primary);
+/* Hover State */
+.sidebar-item:hover {
     background-color: var(--bg-card-hover);
+    color: var(--text-primary);
 }
 
-/* Active Menu State */
-.nav-item.router-link-active,
-.nav-item.is-active {
+/* Active State (Vue Router Active / Class Manual) */
+.sidebar-item.is-active,
+.router-link-active.sidebar-item {
+    background-color: var(--brand-soft);
     color: var(--accent-cyan);
-    background-color: rgba(6, 182, 212, 0.1);
-    border-left: 3px solid var(--accent-cyan);
+    font-weight: 700;
 }
 
-/* Layout Desktop */
-@media (min-width: 768px) {
-    .app-sidebar {
-        position: static;
-        transform: none;
-        z-index: 10;
-        height: calc(100vh - 56px);
-    }
+/* Cyan Dot Indicator (Aktif) */
+.sidebar-item.is-active::before,
+.router-link-active.sidebar-item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 4px;
+    height: 18px;
+    background-color: var(--accent-cyan);
+    border-radius: 0 4px 4px 0;
+    box-shadow: 0 0 8px var(--accent-cyan);
+}
 
-    .sidebar-overlay {
-        display: non
-e;
-    }
+/* Icon Styling */
+.sidebar-item i,
+.sidebar-item svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2px;
+    flex-shrink: 0;
+    transition: transform var(--transition-fast);
+}
+
+.sidebar-item:hover i,
+.sidebar-item:hover svg {
+    transform: scale(1.08);
+}
+
+.sidebar-item:active {
+    transform: scale(0.98);
 }
