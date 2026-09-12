@@ -2,7 +2,7 @@
 import { Logger } from './services/debug.js';
 
 // Load Komponen Utama (Fokus Sesi Ini)
-import UploadView from '../views/UploadView.js';
+import UploadView from '../views/upload.js';
 
 /* --- FITUR MENDATANG (LAZY LOAD) ---
 const Dashboard = () => import('./views/dashboard.js');
