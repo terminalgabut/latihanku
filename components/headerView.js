@@ -1,34 +1,34 @@
-// js/components/headerView.js
+// components/headerView.js
 
-export default {
-  name: 'HeaderView',
-  template: `
+export default `
     <header class="app-header">
-      <div class="header-brand">
-        <!-- Button Toggle Menu (Hanya Tampil di Mobile Android) -->
-        <button 
-          @click="$emit('toggle-sidebar')" 
-          class="btn-menu-toggle" 
-          title="Buka Menu Navigasi"
-          aria-label="Toggle Sidebar"
-        >
-          <i data-lucide="menu"></i>
-        </button>
+        <div class="header-container">
+            <!-- Sidebar Toggle Button (Mobile) -->
+            <button 
+                type="button"
+                class="btn-icon sidebar-toggle" 
+                @click="$emit('toggle-sidebar')" 
+                title="Buka Menu"
+            >
+                <i class="fa-solid fa-bars"></i>
+            </button>
 
-        <!-- Logo / Title Application -->
-        <router-link to="/" class="header-title" style="text-decoration: none;">
-          <i data-lucide="activity" class="text-cyan"></i>
-          <span>GARMIN<span class="brand-accent">HUB</span></span>
-        </router-link>
-      </div>
-
-      <!-- Right Action Bar -->
-      <div class="header-nav">
-        <router-link to="/upload" class="btn-menu-toggle" title="Upload CSV">
-          <i data-lucide="upload-cloud"></i>
-        </router-link>
-      </div>
+            <!-- Brand / Logo -->
+            <router-link to="/" class="header-brand">
+                <i class="fa-solid fa-bolt text-cyan"></i>
+                <span>Garmin CSV Hub</span>
+            </router-link>
+            
+            <!-- Navigation Action Right -->
+            <div class="header-actions">
+                <router-link to="/settings" class="btn-icon" title="Pengaturan">
+                    <i class="fa-solid fa-gear"></i>
+                </router-link>
+                <router-link to="/profil" class="btn-icon" title="Profil">
+                    <i class="fa-solid fa-circle-user"></i>
+                </router-link>
+            </div>
+        </div>
     </header>
-  `
-
-};
+`
+  ;
