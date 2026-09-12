@@ -1,19 +1,20 @@
-/* css/base/typography.css */
-
 /* Headings */
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
     font-weight: 700;
     letter-spacing: -0.02em;
     color: var(--text-primary);
 }
 
-h1 { font-size: 1.5rem; }   /* 24px */
-h2 { font-size: 1.25rem; }  /* 20px */
-h3 { font-size: 1rem; }     /* 16px */
+h1 { font-size: 1.5rem; }
+h2 { font-size: 1.25rem; }
+h3 { font-size: 1rem; }
 
 /* Text Utilities */
 .text-secondary { color: var(--text-secondary); }
-.text-muted     { color: var(--text-muted); }
+.text-muted { color: var(--text-muted); }
 
 /* Sport Metric Typography (Garmin/COROS Style) */
 .metric-value {
@@ -25,7 +26,7 @@ h3 { font-size: 1rem; }     /* 16px */
 }
 
 .metric-label {
-    font-size: 0.6875rem; /* 11px */
+    font-size: 0.6875rem;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
@@ -33,15 +34,14 @@ h3 { font-size: 1rem; }     /* 16px */
 }
 
 .metric-unit {
-    font-size: 0.75rem; /* 12px */
+    font-size: 0.75rem;
     font-weight: 500;
     color: var(--text-muted);
     margin-left: 0.125rem;
 }
 
 /* Accent Colors Utility */
-.text-cyan   { color: var(--accent-cyan); }
+.text-cyan { color: var(--accent-cyan); }
 .text-orange { color: var(--accent-orange); }
-.text-green  { color: var(--accent-green); }
-.text-rose   { color: var(--accent-r
-                          ose); }
+.text-green { color: var(--accent-green); }
+.text-rose { color: var(--accent-rose); }
