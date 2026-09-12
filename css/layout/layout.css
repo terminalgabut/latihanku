@@ -1,0 +1,52 @@
+/* css/layout/layout.css */
+
+/* App Wrapper Utama */
+#app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--bg-main);
+}
+
+/* Layout Container (Sidebar + Main Content) */
+.app-container {
+    display: flex;
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Area Main Content */
+.main-content {
+    flex: 1;
+    width: 100%;
+    padding: 1rem;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* Container Terisolasi untuk Views */
+.view-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Grid System Sederhana untuk Cards/Metrics */
+.grid-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+}
+
+@media (min-width: 768px) {
+    .main-content {
+        padding: 1.5rem 2rem;
+    }
+    
+    .grid-metrics {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 1rem;
+  
+}
+}
