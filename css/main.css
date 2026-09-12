@@ -2,6 +2,7 @@
 @import url('./base/variables.css');
 @import url('./base/reset.css');
 @import url('./base/typography.css');
+
 /* --- LAYOUT --- */
 @import url('./layout/layout.css');
 
@@ -11,3 +12,4 @@
 @import url('./components/map.css');
 
 @import url('./views/dashboard.css');
+@import url('./views/upload.css');
