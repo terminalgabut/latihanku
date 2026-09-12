@@ -1,0 +1,59 @@
+/* css/components/header.css */
+
+.app-header {
+    height: 56px;
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 30;
+}
+
+.header-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.header-title {
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.header-title .brand-accent {
+    color: var(--accent-cyan);
+}
+
+/* Toggle Menu Button (Mobile) */
+.btn-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    background-color: var(--bg-main);
+    border: 1px solid var(--border-color);
+}
+
+.btn-menu-toggle:active {
+    background-color: var(--bg-card-hover);
+    color: var(--accent-cyan);
+}
+
+@media (min-width: 768px) {
+    .btn-menu-toggle {
+        display: none; /* Sembunyikan toggle di desktop */
+ 
+}
+}
