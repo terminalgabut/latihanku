@@ -1,59 +1,91 @@
-/* css/components/header.css */
+/* css/layout/header.css */
 
 .app-header {
-    height: 56px;
-    background-color: var(--bg-card);
+    height: 64px;
+    background-color: var(--brand-glass);
+    backdrop-filter: blur(16px) saturate(180%);
+    -webkit-backdrop-filter: blur(16px) saturate(180%);
     border-bottom: 1px solid var(--border-color);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 1rem;
-    position: sticky;
+    
+    position: fixed;
     top: 0;
-    z-index: 30;
-}
-
-.header-brand {
+    right: 0;
+    left: 0;
+    z-index: 100;
+    
     display: flex;
     align-items: center;
-    gap: 0.75rem;
+    padding: 0 1.25rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
-.header-title {
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 0.03em;
+/* --- LOGO: BOLD & SPORT --- */
+.header-logo {
+    font-size: 1.25rem;
+    font-weight: 800;
+    letter-spacing: -0.04em;
     color: var(--text-primary);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: opacity var(--transition-fast);
+}
+
+.header-logo:active {
+    opacity: 0.8;
+}
+
+.header-logo::after {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background-color: var(--accent-cyan);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--accent-cyan);
+}
+
+/* --- NAV & ICONS --- */
+.header-nav {
+    margin-left: auto;
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-.header-title .brand-accent {
-    color: var(--accent-cyan);
-}
-
-/* Toggle Menu Button (Mobile) */
-.btn-menu-toggle {
+.nav-icon {
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 36px;
-    height: 36px;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
     color: var(--text-secondary);
-    background-color: var(--bg-main);
-    border: 1px solid var(--border-color);
+    transition: all var(--transition-fast);
+    cursor: pointer;
 }
 
-.btn-menu-toggle:active {
+.nav-icon:hover {
     background-color: var(--bg-card-hover);
     color: var(--accent-cyan);
 }
 
-@media (min-width: 768px) {
-    .btn-menu-toggle {
-        display: none; /* Sembunyikan toggle di desktop */
- 
+.nav-icon:active {
+    background-color: var(--brand-soft);
+    transform: scale(0.94);
 }
+
+.nav-icon i,
+.nav-icon svg {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2px;
+}
+
+/* --- DESKTOP ADJUSTMENT --- */
+@media (min-width: 1025px) {
+    .app-header {
+        left: 280px;
+        
+    }
 }
