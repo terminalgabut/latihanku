@@ -107,7 +107,6 @@ export default {
             handleFileChange,
             processFiles,
             submitToSupabase
-     
-};
+        };
     }
 };
