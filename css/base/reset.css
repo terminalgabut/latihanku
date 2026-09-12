@@ -32,9 +32,18 @@ button {
     cursor: pointer;
 }
 
-/* Image Reset */
+/* Image & Icon Reset */
 img, svg {
     display: block;
-    max-width: 100%
-  ;
+    max-width: 100%;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul, ol {
+    list-style: n
+        one;
 }
