@@ -1,4 +1,4 @@
-// js/layouts/layoutView.js
+// components/layoutView.js
 
 export default {
   name: 'LayoutView',
