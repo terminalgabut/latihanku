@@ -19,36 +19,6 @@ export default `
                     <i class="fa-solid fa-cloud-arrow-up"></i>
                     <span>Import CSV</span>
                 </router-link>
-
-                <router-link to="/dashboard" class="sidebar-item" active-class="is-active">
-                    <i class="fa-solid fa-chart-simple"></i>
-                    <span>Dashboard</span>
-                </router-link>
-
-                <router-link to="/activities" class="sidebar-item" active-class="is-active">
-                    <i class="fa-solid fa-person-running"></i>
-                    <span>Activities</span>
-                </router-link>
-
-                <router-link to="/advanced-analytics" class="sidebar-item" active-class="is-active">
-                    <i class="fa-solid fa-chart-line text-green"></i>
-                    <span>Adv Analytics</span>
-                </router-link>
-
-                <router-link to="/coach" class="sidebar-item" active-class="is-active">
-                    <i class="fa-solid fa-wand-magic-sparkles text-cyan"></i>
-                    <span>AI Coach</span>
-                </router-link>
-
-                <router-link to="/training-log" class="sidebar-item" active-class="is-active">
-                    <i class="fa-solid fa-calendar-days"></i>
-                    <span>Training Log</span>
-                </router-link>
-
-                <router-link to="/performance-settings" class="sidebar-item" active-class="is-active">
-                    <i class="fa-solid fa-sliders"></i>
-                    <span>Settings</span>
-                </router-link>
             </nav>
 
             <!-- Status Box / Footer Sidebar -->
