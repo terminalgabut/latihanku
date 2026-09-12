@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>  
+    <meta charset="UTF-8">  
+    <title>LATIHAN KU</title>   
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">   
+    
+    <!-- CSS Dependencies -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.css">
+    
+    <!-- Tailwind CSS Engine -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style id="export-styles">
+        .is-exporting * {
+            box-sizing: border-box;
+            line-height: 1.2 !important; 
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+       
+        .is-exporting { 
+            background: #0F172A !important; 
+            padding: 0 !important;
+            margin: 0 !important;
+        } 
+        
+        #export-root {
+            width: 600px;
+            background: #0F172A;
+            height: auto !important;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            transform: translateZ(0);
+        }
+        
+        .is-exporting span,
+        .is-exporting p, 
+        .is-exporting h1 {
+            position: relative;
+            top: 0 !important; 
+            display: inline-block;
+            vertical-align: middle;
+        }
+        
+        .is-exporting .tabular-nums {
+            font-variant-numeric: tabular-nums;
+        }
+        
+        /* Stats Box (Distance, Pace, Elevation) */
+        .is-exporting .bg-white\/5, 
+        .is-exporting .bg-blue-600 {
+            padding-top: 1.25rem !important; 
+            padding-bottom: 1.25rem !important; 
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+        }
+        
+        /* Lap Splits KM Box */
+        .is-exporting .grid > div { 
+            padding: 10px !important;
+            height: 56px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            align-items: center !important;
+        }
+        
+        /* Mapbox Export Fix */
+        .is-exporting .export-map {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            border-radius: 40px;
+            overflow: hidden;
+        }
+
+        .is-exporting .mapboxgl-canvas {
+            border-radius: 40px !important;
+            position: relative !important;
+        }
+        
+        /* Cleanup & Performance */
+        .is-exporting .no-export,
+        .is-exporting button,
+        .is-exporting .nav-menu,
+        .is-exporting #__vconsole {
+            display: none !important;
+        } 
+    </style>
+</head>
+<body class="bg-slate-900 text-white min-h-screen">
+
+    <!-- Container Mount untuk html-to-image Export -->
+    <div id="export-mount" class="fixed top-0 left-0 w-[600px] opacity-0 pointer-events-none -z-10"></div>
+
+    <!-- Mount Root Aplikasi Vue -->
+    <div id="app"></div> 
+
+    <!-- Core JavaScript Libraries -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://unpkg.com/vue-router@4/dist/vue-router.global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v3.0.1/mapbox-gl.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Main Application Script Module -->
+    <script type="module" src="js/app.js"></script> 
+
+</body>
+</h
+  tml>
