@@ -1,17 +1,9 @@
-// js/components/header.js
-import headerView from './headerView.js';
+// components/header.js
+import headerTemplate from './headerView.js';
 
 export default {
-    ...headerView,
-    emits: ['toggle-sidebar'],
-    mounted() {
-        if (window.lucide && typeof window.lucide.createIcons === 'function') {
-            window.lucide.createIcons();
-        }
-    },
-    updated() {
-        if (window.lucide && typeof window.lucide.createIcons === 'function') {
-            window.lucide.createIcons();
-        }
-    }
-};
+    name: 'HeaderComponent',
+    template: headerTemplate,
+    emits: ['toggle-sidebar']
+}
+    ;
