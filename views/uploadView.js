@@ -19,7 +19,8 @@ export default `
                 <button @click="triggerFileSelect('record')" class="mt-4 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg border border-slate-700 transition-colors">
                     {{ files.record ? 'Ganti File' : 'Pilih File' }}
                 </button>
-                <input type="file" ref="recordInput" accept=".csv" class="hidden" @change="e => handleFileChange(e, 'record')" />
+                <input type="file" ref="recordInput" class="hidden" @change="e => handleFileChange(e, 'record')" />
+
             </div>
 
             <!-- Lap File Card -->
@@ -31,7 +32,8 @@ export default `
                 <button @click="triggerFileSelect('lap')" class="mt-4 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg border border-slate-700 transition-colors">
                     {{ files.lap ? 'Ganti File' : 'Pilih File' }}
                 </button>
-                <input type="file" ref="lapInput" accept=".csv" class="hidden" @change="e => handleFileChange(e, 'lap')" />
+                
+                <input type="file" ref="lapInput" class="hidden" @change="e => handleFileChange(e, 'lap')" />
             </div>
 
             <!-- Session File Card -->
@@ -43,7 +45,9 @@ export default `
                 <button @click="triggerFileSelect('session')" class="mt-4 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg border border-slate-700 transition-colors">
                     {{ files.session ? 'Ganti File' : 'Pilih File' }}
                 </button>
-                <input type="file" ref="sessionInput" accept=".csv" class="hidden" @change="e => handleFileChange(e, 'session')" />
+                
+                <input type="file" ref="sessionInput" class="hidden" @change="e => handleFileChange(e, 'session')" />
+
             </div>
         </div>
 
