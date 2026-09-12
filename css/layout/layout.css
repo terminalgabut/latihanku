@@ -6,6 +6,22 @@
     flex-direction: column;
     min-height: 100vh;
     background-color: var(--bg-main);
+    position: relative;
+}
+
+/* Header Container Sticky/Fixed */
+.app-header {
+    position: sticky;
+    top: 0;
+    z-index: 40;
+    width: 100%;
+    height: 60px;
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
 }
 
 /* Layout Container (Sidebar + Main Content) */
@@ -14,6 +30,35 @@
     flex: 1;
     position: relative;
     overflow: hidden;
+}
+
+/* Sidebar Drawer Style & Overlay Fix */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 260px;
+    background-color: var(--bg-card);
+    border-right: 1px solid var(--border-color);
+    z-index: 50;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar.is-open {
+    transform: translateX(0);
+}
+
+/* Backdrop Overlay untuk Mobile */
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: rgba(11, 15, 23, 0.8);
+    backdrop-filter: blur(4px);
+    z-index: 45;
 }
 
 /* Area Main Content */
@@ -39,14 +84,25 @@
     gap: 0.75rem;
 }
 
+/* Desktop Viewport Adaptation */
 @media (min-width: 768px) {
+    .sidebar {
+        position: static;
+        transform: none;
+        z-index: 10;
+    }
+
+    .sidebar-overlay {
+        display: none !important;
+    }
+
     .main-content {
         padding: 1.5rem 2rem;
     }
     
     .grid-metrics {
         grid-template-columns: repeat(4, minmax(0, 1fr));
-        gap: 1rem;
-  
-}
+        gap: 1r
+            em;
+    }
 }
