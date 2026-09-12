@@ -1,78 +1,79 @@
-export default {
-    name: 'UploadView',
-    template: `
-        <div class="upload-page max-w-3xl mx-auto py-6">
-            <div class="mb-6">
-                <h1 class="text-2xl font-bold text-slate-100 flex items-center gap-2">
-                    <i class="fa-solid fa-cloud-arrow-up text-cyan"></i>
-                    Import CSV Garmin
-                </h1>
-                <p class="text-slate-400 text-sm mt-1">Unggah berkas CSV aktivitas Garmin kamu untuk dianalisis.</p>
-            </div>
+// views/uploadView.js
+export default `
+    <div class="upload-page max-w-3xl mx-auto py-6">
+        <div class="mb-6">
+            <h1 class="text-2xl font-bold text-slate-100 flex items-center gap-2">
+                <i class="fa-solid fa-cloud-arrow-up text-cyan"></i>
+                Import 3 File CSV Garmin
+            </h1>
+            <p class="text-slate-400 text-sm mt-1">Unggah file Record, Lap, dan Session untuk dianalisis.</p>
+        </div>
 
-            <!-- Drop Zone Area -->
-            <div 
-                class="border-2 border-dashed rounded-xl p-8 text-center transition-all bg-slate-900/40"
-                :class="{
-                    'border-cyan bg-cyan/5': isDragging,
-                    'border-slate-700 hover:border-slate-500': !isDragging
-                }"
-                @dragover.prevent="onDragOver"
-                @dragleave.prevent="onDragLeave"
-                @drop.prevent="onDrop"
-            >
-                <div class="flex flex-col items-center justify-center gap-3">
-                    <div class="w-12 h-12 rounded-full bg-slate-800 flex items-center justify-center text-cyan text-xl mb-1">
-                        <i class="fa-solid fa-file-csv"></i>
-                    </div>
-
-                    <div v-if="!selectedFile">
-                        <p class="text-slate-200 font-medium">Tarik & lepas file CSV di sini</p>
-                        <p class="text-slate-500 text-xs mt-1">atau pilih berkas dari komputer kamu</p>
-                        
-                        <label class="inline-block mt-4 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-sm font-semibold rounded-lg cursor-pointer border border-slate-700 transition-colors">
-                            Pilih Berkas
-                            <input type="file" accept=".csv" class="hidden" @change="onFileSelect" />
-                        </label>
-                    </div>
-
-                    <div v-else class="flex flex-col items-center">
-                        <p class="text-cyan font-semibold text-sm">{{ selectedFile.name }}</p>
-                        <p class="text-slate-500 text-xs mt-0.5">{{ (selectedFile.size / 1024).toFixed(1) }} KB</p>
-                        
-                        <div class="flex gap-2 mt-4">
-                            <button 
-                                @click="handleUpload" 
-                                :disabled="isLoading"
-                                class="px-5 py-2 bg-cyan text-slate-950 font-bold text-sm rounded-lg hover:bg-cyan/90 disabled:opacity-50 flex items-center gap-2 transition-colors"
-                            >
-                                <i v-if="isLoading" class="fa-solid fa-circle-notch fa-spin"></i>
-                                <span>{{ isLoading ? 'Memproses...' : 'Mulai Upload' }}</span>
-                            </button>
-                            <button 
-                                @click="selectedFile = null" 
-                                :disabled="isLoading"
-                                class="px-3 py-2 bg-slate-800 text-slate-400 hover:text-slate-200 text-sm font-semibold rounded-lg border border-slate-700 transition-colors"
-                            >
-                                Batal
-                            </button>
-                        </div>
-                    </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <!-- Record File Card -->
+            <div class="p-4 bg-slate-900/60 border border-slate-800 rounded-xl flex flex-col justify-between">
+                <div>
+                    <span class="text-xs font-semibold text-cyan uppercase tracking-wider">1. Record CSV</span>
+                    <p class="text-sm font-medium text-slate-200 mt-1 truncate">{{ files.record ? files.record.name : 'Belum dipilih' }}</p>
                 </div>
+                <button @click="triggerFileSelect('record')" class="mt-4 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg border border-slate-700 transition-colors">
+                    {{ files.record ? 'Ganti File' : 'Pilih File' }}
+                </button>
+                <input type="file" ref="recordInput" accept=".csv" class="hidden" @change="e => handleFileChange(e, 'record')" />
             </div>
 
-            <!-- Feedback Message -->
-            <div 
-                v-if="statusMessage" 
-                class="mt-4 p-4 rounded-lg text-sm flex items-center gap-3 border"
-                :class="{
-                    'bg-emerald-950/40 border-emerald-800/50 text-emerald-400': uploadStatus === 'success',
-                    'bg-rose-950/40 border-rose-800/50 text-rose-400': uploadStatus === 'error'
-                }"
-            >
-                <i :class="uploadStatus === 'success' ? 'fa-solid fa-circle-check' : 'fa-solid fa-triangle-exclamation'"></i>
-                <span>{{ statusMessage }}</span>
+            <!-- Lap File Card -->
+            <div class="p-4 bg-slate-900/60 border border-slate-800 rounded-xl flex flex-col justify-between">
+                <div>
+                    <span class="text-xs font-semibold text-cyan uppercase tracking-wider">2. Lap CSV</span>
+                    <p class="text-sm font-medium text-slate-200 mt-1 truncate">{{ files.lap ? files.lap.name : 'Belum dipilih' }}</p>
+                </div>
+                <button @click="triggerFileSelect('lap')" class="mt-4 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg border border-slate-700 transition-colors">
+                    {{ files.lap ? 'Ganti File' : 'Pilih File' }}
+                </button>
+                <input type="file" ref="lapInput" accept=".csv" class="hidden" @change="e => handleFileChange(e, 'lap')" />
+            </div>
+
+            <!-- Session File Card -->
+            <div class="p-4 bg-slate-900/60 border border-slate-800 rounded-xl flex flex-col justify-between">
+                <div>
+                    <span class="text-xs font-semibold text-cyan uppercase tracking-wider">3. Session CSV</span>
+                    <p class="text-sm font-medium text-slate-200 mt-1 truncate">{{ files.session ? files.session.name : 'Belum dipilih' }}</p>
+                </div>
+                <button @click="triggerFileSelect('session')" class="mt-4 px-3 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg border border-slate-700 transition-colors">
+                    {{ files.session ? 'Ganti File' : 'Pilih File' }}
+                </button>
+                <input type="file" ref="sessionInput" accept=".csv" class="hidden" @change="e => handleFileChange(e, 'session')" />
             </div>
         </div>
-    `
-};
+
+        <!-- Tombol Proses -->
+        <div class="flex flex-col gap-3">
+            <button 
+                @click="processFiles" 
+                :disabled="!isReadyToProcess || isProcessing"
+                class="w-full py-3 bg-cyan text-slate-950 font-bold text-sm rounded-xl hover:bg-cyan/90 disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2 transition-colors shadow-lg shadow-cyan/10"
+            >
+                <i v-if="isProcessing" class="fa-solid fa-circle-notch fa-spin"></i>
+                <span>{{ isProcessing ? 'Memproses Data CSV...' : 'Proses & Agregasi Data' }}</span>
+            </button>
+        </div>
+
+        <!-- Preview & Tombol Kirim ke Supabase -->
+        <div v-if="payloadPreview" class="mt-6 p-5 bg-slate-900/80 border border-slate-800 rounded-xl">
+            <h3 class="text-sm font-bold text-slate-200 mb-2 flex items-center gap-2">
+                <i class="fa-solid fa-circle-check text-emerald-400"></i>
+                Data Siap Disimpan ke Supabase
+            </h3>
+            <p class="text-xs text-slate-400 mb-4">Agregasi berhasil dilakukan. Silakan kirim data ke database.</p>
+            <button 
+                @click="submitToSupabase" 
+                :disabled="isSubmitting"
+                class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-lg disabled:opacity-50 flex items-center gap-2 transition-colors"
+            >
+                <i v-if="isSubmitting" class="fa-solid fa-circle-notch fa-spin"></i>
+                <span>{{ isSubmitting ? 'Menyimpan...' : 'Simpan ke Supabase' }}</span>
+            </button>
+        </div>
+    </div>
+`;
